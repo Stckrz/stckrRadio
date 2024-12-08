@@ -1,0 +1,23 @@
+
+./audio/kendrick/loyalty.mp3
+./audio/kendrick/pride.mp3
+./audio/oldies/01 Livin' Lovin' Doll - Cliff Richard 1959.mp3
+./audio/oldies/02 Be-Bop-A-Lula - Gene Vincent 1956.mp3
+./audio/oldies/03 C'mon Everybody - Eddie Cochran 1958.mp3
+./audio/oldies/04 That's All Right Mama - Elvis Presley 1958.mp3
+./audio/oldies/05 Bye Bye Love - The Everly Brothers 1957.mp3
+./audio/oldies/06 A teenager in love - Dion & The Belmonts 1959.mp3
+./audio/oldies/07 Only sixteen - Craig Douglas 1959.mp3
+./audio/oldies/08 Blueberry Hill - Fats Domino 1956.mp3
+./audio/oldies/09 Someday (you'll want me toi want you - Ricky Nelson 1958.mp3
+./audio/oldies/10 Party Doll - Buddy Knox 1957.mp3
+./audio/oldies/11 Willie and the hand jive - Johnny Otis Show 1958.mp3
+./audio/oldies/12 Guitar Boggie Shuffle - Bert Weedon 1959.mp3
+./audio/oldies/13 Please don't touch - Johnny Kidd & The Pirates 1959.mp3
+./audio/oldies/14 True, True happiness - Johnny Tillotson 1959.mp3
+./audio/oldies/15 The Great Pretender - Jimmy Parkinson 1956.mp3
+./audio/oldies/16 Be my girl - Jim Dale 1957.mp3
+./audio/oldies/17 Lollipop - The Chordettes 1958.mp3
+./audio/oldies/18 Baby Doll - Andy Williams 1956.mp3
+./audio/oldies/19 You belong to me - Dean Martin 1952.mp3
+./audio/oldies/20 Comes a-long a-love - Kay Starr 1952.mp3
