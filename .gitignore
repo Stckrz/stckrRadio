@@ -7,7 +7,7 @@ yarn-error.log*
 dist/
 build/
 coverage/
-
+.onnx
 # Python
 __pycache__/
 *.pyc
