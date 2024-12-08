@@ -21,6 +21,7 @@ venv/
 build/
 dist/
 *.mp3
+./piper/piperenv/*
 
 .DS_Store
 .idea
