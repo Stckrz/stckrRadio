@@ -1,19 +1,21 @@
-import { writeMp3FilesToFile, getSubDirectoriesToWrite } from './lib/writeFile.js';
+import { getSubDirectoriesToWrite } from './lib/writeFile.js';
 import express from 'express';
 import fs from 'fs';
+import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 import { PassThrough } from 'stream';
 import { parseFile } from 'music-metadata';
-import { llamaResponse } from './lib/llamaResponse.js';
+import { generalRadioBabble, llamaResponse } from './lib/llamaResponse.js';
 import { shuffle } from './lib/commonStuff.js';
+dotenv.config()
 
 const app = express();
-const PORT = 3000;
-const TTS_FILE_PATH = '/home/stckrz/code/simpleAudioStream/piperOutput.mp3';
+const PORT = process.env.NODE_PORT
 const queue = [];
 let ffmpeg = null;
 let currentMetadata = {};
 let nextMetadata = {};
+let playedSongs = 0;
 
 //js standard stream, outputs exactly what is passed in, immediately.
 const streamBuffer = new PassThrough()
@@ -22,17 +24,43 @@ const loadQueueFromFile = (filePath) => {
 		//reads the file in, and adds each filename to the queue
 		const fileContent = fs.readFileSync(filePath, 'utf8');
 		const files = fileContent.split('\n').map((line) => line.trim()).filter((line) => line);
-		files.map((file) => {
-			queue.push(`${file}`)
-		})
+		for(let i = 0; i < 11; i++){
+			shuffle(files);
+			queue.push(`${files[i]}`);
+		}
+		console.error(queue)
+		// files.map((file) => {
+		// 	queue.push(`${file}`)
+		// })
 		shuffle(queue)
 	} catch (err) {
 		console.error('Error reading file ${filePath}: ', err.message);
 	}
 };
 
+const parseMetadata = async (filePath) => {
+	try {
+		const metadata = await parseFile(filePath)
+		return {
+			title: metadata.common.title || 'Unknown Title',
+			artist: metadata.common.artist || 'Unknown Artist',
+			album: metadata.common.album || 'Unknown Album',
+			duration: metadata.format.duration || 0
+		}
+	} catch (error) {
+		return {
+			title: 'Unknown Title',
+			artist: 'Unknown Artist',
+			album: 'Unknown Album',
+			duration: 0
+		}
+
+	}
+}
+
 // piperOutput.mp3
 const streamFile = async () => {
+	console.error("played songs", playedSongs)
 	console.error(queue)
 	//if queue is empty, refills the queue
 	if (queue.length === 0) {
@@ -47,72 +75,22 @@ const streamFile = async () => {
 	const filePath = queue.shift();
 	const nextSong = queue[0];
 	console.log(`Streaming file: ${filePath}`);
-
-	const parseMetadata = async (filePath) => {
-		try {
-			const metadata = await parseFile(filePath)
-			return {
-				title: metadata.common.title || 'Unknown Title',
-				artist: metadata.common.artist || 'Unknown Artist',
-				album: metadata.common.album || 'Unknown Album',
-				duration: metadata.format.duration || 0
-			}
-		} catch (error) {
-			return {
-				title: 'Unknown Title',
-				artist: 'Unknown Artist',
-				album: 'Unknown Album',
-				duration: 0
-			}
-
-		}
+	if (filePath !== 'piperOutput.mp3' && nextSong && nextSong !== 'piperOutput.mp3') {
+		playedSongs += 1
 	}
-	currentMetadata = parseMetadata(filePath)
-	if (filePath !== TTS_FILE_PATH && nextSong && nextSong !== TTS_FILE_PATH) {
-		nextMetadata = parseMetadata(nextSong)
 
-		llamaResponse(nextMetadata)
-		queue.unshift('/home/stckrz/code/simpleAudioStream/piperOutput.mp3')
+	currentMetadata = await parseMetadata(filePath)
+	if (filePath !== 'piperOutput.mp3' && nextSong && nextSong !== 'piperOutput.mp3' && playedSongs == 4) {
+		generalRadioBabble();
+		queue.unshift('piperOutput.mp3');
+		playedSongs = 0
 	}
-	// try {
-	// 	const metadata = await parseFile(filePath)
-	// 	currentMetadata = {
-	// 		title: metadata.common.title || 'Unknown Title',
-	// 		artist: metadata.common.artist || 'Unknown Artist',
-	// 		album: metadata.common.album || 'Unknown Album',
-	// 		duration: metadata.format.duration || 0
-	// 	}
-	// } catch (error) {
-	// 	console.error('error fetching metadata..', error.message)
-	// 	currentMetadata = {
-	// 		title: 'Unknown Title',
-	// 		artist: 'Unknown Artist',
-	// 		album: 'Unknown Album',
-	// 		duration: 0
-	// 	}
-	// }
-	// if (filePath !== TTS_FILE_PATH && nextSong && nextSong !== TTS_FILE_PATH) {
-	// 	try {
-	// 		const metadata2 = await parseFile(nextSong)
-	// 		nextMetadata = {
-	// 			title: metadata2.common.title || 'Unknown Title',
-	// 			artist: metadata2.common.artist || 'Unknown Artist',
-	// 			album: metadata2.common.album || 'Unknown Album',
-	// 			duration: metadata2.format.duration || 0
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('error fetching metadata..', error.message)
-	// 		nextMetadata = {
-	// 			title: 'Unknown Title',
-	// 			artist: 'Unknown Artist',
-	// 			album: 'Unknown Album',
-	// 			duration: 0
-	// 		}
-	//
-	// 	}
-	// 	llamaResponse(nextMetadata)
-	// 	queue.unshift('/home/stckrz/code/simpleAudioStream/piperOutput.mp3')
-	// }
+	else if (filePath !== 'piperOutput.mp3' && nextSong && nextSong !== 'piperOutput.mp3' && playedSongs == 2) {
+		nextMetadata = await parseMetadata(nextSong)
+
+		llamaResponse(nextMetadata);
+		queue.unshift('piperOutput.mp3');
+	}
 
 
 	// Start FFmpeg to continuously stream
@@ -129,7 +107,7 @@ const streamFile = async () => {
 	ffmpeg.stdout.pipe(streamBuffer, { end: false })
 
 	ffmpeg.stderr.on('data', (data) => {
-		console.error(`FFmpeg stderr: ${data}`)
+		// console.error(`FFmpeg stderr: ${data}`)
 	})
 
 	ffmpeg.on('close', (code) => {
@@ -150,6 +128,9 @@ app.get('/stream', (req, res) => {
 		'Connection': 'keep-alive',
 	});
 	streamBuffer.pipe(res);
+	req.on('open', () => {
+		res.json({info: "user connected"})
+	})
 	//disconnects the stream from the user when they close the connection
 	req.on('close', () => {
 		streamBuffer.unpipe(res);

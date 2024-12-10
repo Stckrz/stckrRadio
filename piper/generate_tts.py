@@ -9,7 +9,8 @@ def generate_tts(input_file):
         text = file.read()
 
     # Where onnx model files are stored on my machine
-    voicedir = os.path.expanduser('~/code/simpleAudioStream/piper/models/')
+    # voicedir = os.path.expanduser('~/code/simpleAudioStream/piper/models/')
+    voicedir = os.path.expanduser('piper/models/')
     model = voicedir+"en_US-amy-medium.onnx"
     voice = PiperVoice.load(model)
     wav_file = wave.open('piperOutput.mp3', 'w')

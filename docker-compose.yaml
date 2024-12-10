@@ -1,0 +1,33 @@
+version: '3.0'
+
+services:
+  nodeapp:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: noderadioserver
+    restart: unless-stopped
+    volumes:
+      - /home/stckrz/Music:/app/audio/music:rw,z
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NODE_PORT: 3000
+      PYTHON_PATH: /app/piper/piperenv/bin/python
+    # privileged: true 
+
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama:/root/.ollama
+    ports: 
+      - "11434:11434"
+    command: ["serve"]
+volumes:
+  ollama:
+    driver: local

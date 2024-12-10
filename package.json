@@ -5,13 +5,20 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
     "music-metadata": "^10.6.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }
