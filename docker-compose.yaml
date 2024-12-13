@@ -8,7 +8,7 @@ services:
     container_name: noderadioserver
     restart: unless-stopped
     volumes:
-      - /home/stckrz/Music:/app/audio/music:rw,z
+      - /home/stckrz/Music:/app/src/assets/audio/music:rw,z
     ports:
       - "3000:3000"
     environment:

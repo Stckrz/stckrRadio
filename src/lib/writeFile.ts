@@ -1,14 +1,15 @@
 import fs from 'fs';
-export const writeToFile = (text, outputFile) => {
+import path from 'path';
+export const writeToFile = (text: string, outputFile: string) => {
 	fs.writeFileSync(outputFile, text, 'utf8')
 }
 
-// export const getSubDirectoriesToWrite = (directory = './audio', outputFile = 'songFiles.txt') => {
-export const getSubDirectoriesToWrite = (directory = './audio', outputFile = 'songFiles.txt') => {
-	const mp3FileArray = []
+const audioPath = path.join(process.cwd(), 'src/assets/audio')
+const songFilePath = path.join(process.cwd(), 'songFiles.txt')
+export const getSubDirectoriesToWrite = (directory = audioPath, outputFile = songFilePath) => {
 	try {
 		if (!fs.existsSync(directory)) {
-			console.log("directory does not exist");
+			console.log("directory does not exist", directory);
 			return
 		}
 		if (directory === './audio') {
@@ -31,17 +32,18 @@ export const getSubDirectoriesToWrite = (directory = './audio', outputFile = 'so
 			const subDirectoryPath = `${directory}/${subdirectory.name}`
 			getSubDirectoriesToWrite(subDirectoryPath, outputFile)
 		})
-		console.log(mp3FileArray)
 	}
 	catch (err) {
-		console.log('Error reading directories', err.message)
+		if (err instanceof Error) {
+			console.log('Error reading directories', err.message)
+		}
 	}
 }
 
-export const writeMp3FilesToFile = (directory, outputFile = 'songFiles.txt') => {
+export const writeMp3FilesToFile = (directory: string, outputFile = 'songFiles.txt') => {
 	try {
 		if (!fs.existsSync(directory)) {
-			console.log("directory does not exist");
+			console.log("directory does not exist", directory);
 			return;
 		}
 
@@ -59,6 +61,8 @@ export const writeMp3FilesToFile = (directory, outputFile = 'songFiles.txt') => 
 		fs.appendFileSync(outputFile, mp3Files.join('\n'), 'utf8');
 		console.log(`mp3 files written to ${outputFile}`)
 	} catch (err) {
-		console.log('Error writing to file', err.message)
+		if (err instanceof Error) {
+			console.log('Error writing to file', err.message)
+		}
 	}
 }

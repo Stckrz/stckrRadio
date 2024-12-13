@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs", 
-    "rootDir": "./",     
-    "outDir": "./dist", 
+    "target": "es2020",
+    "module": "NodeNext",
+	"moduleResolution": "nodenext",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,                         
-    "skipLibCheck": true                   
-  }
+    "skipLibCheck": true,
+	"allowJs": true,
+    "checkJs": false
+  },
+  "include": ["src/**/*", "assets/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
