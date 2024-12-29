@@ -16,7 +16,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
-    "music-metadata": "^10.6.2"
+    "music-metadata": "^10.6.2",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
