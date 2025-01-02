@@ -4,6 +4,7 @@ import { Song } from "./Playable/Song.js";
 import { generalRadioBabble, llamaResponse } from "../lib/llamaResponse.js";
 import path from "path";
 import { loadQueueFromFile } from "../index.js";
+import { io} from '../index.js';
 
 const songFilePath = path.join(process.cwd(), 'songFiles.txt');
 export class PlaybackManager {
@@ -57,6 +58,7 @@ export class PlaybackManager {
 
 		console.log(`Streaming file: ${song.filePath}`);
 		this.currentSong = song;
+		io.emit('currentSong', this.currentSongMetadata())
 
 		if (song.filePath !== 'piperOutput.mp3' && song && song.filePath !== 'piperOutput.mp3') {
 			this.playedSongs++

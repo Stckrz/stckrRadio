@@ -23,6 +23,7 @@ const io = new SocketIOServer(server, {
 		methods: ['GET', 'POST'],
 	},
 });
+export {io};
 const queue: Song[] = [];
 export const loadQueueFromFile = async (filePath: string) => {
 	try {
@@ -130,7 +131,7 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('addSong', (data) => {
-		console.log("filepath", data.filePath)
+		console.log("songPath", data.songPath)
 		const songPath = data.songPath
 		if (songPath) {
 			queue.push(new Song(songPath))
